@@ -1,3 +1,6 @@
+It is a fork of the following crate which seems to be unmaintained. If you know a community
+version which is better maintained, we'd be happy to focus our efforts there. 
+
 netstat2
 =======
 [![Latest version](https://img.shields.io/crates/v/netstat2.svg)](https://crates.io/crates/netstat2)
