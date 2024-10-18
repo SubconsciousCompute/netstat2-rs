@@ -1,5 +1,5 @@
-It is a fork of the following crate which seems to be unmaintained. If you know a community
-version which is better maintained, we'd be happy to focus our efforts there. 
+_ 👉 It is a fork of the following crate which seems to be unmaintained. If you know a community
+version which is better maintained, we'd be happy to focus our efforts there._
 
 netstat2
 =======
