@@ -70,7 +70,7 @@ impl Iterator for NetlinkIterator {
                     }
                     let diag_msg = NLMSG_DATA!(self.nlh) as *const inet_diag_msg;
                     let rtalen =
-                        (&*self.nlh).nlmsg_len as usize - NLMSG_LENGTH!(size_of::<inet_diag_msg>());
+                        (*self.nlh).nlmsg_len as usize - NLMSG_LENGTH!(size_of::<inet_diag_msg>());
                     let socket_info = parse_diag_msg(&*diag_msg, self.protocol, rtalen);
                     self.nlh = NLMSG_NEXT!(self.nlh, self.numbytes);
                     return Some(socket_info);
@@ -187,7 +187,7 @@ unsafe fn parse_tcp_state(diag_msg: &inet_diag_msg, rtalen: usize) -> TcpState {
     let mut len = rtalen as isize;
     let mut attr = (diag_msg as *const inet_diag_msg).offset(1) as *const rtattr;
     while RTA_OK!(attr, len) {
-        if (&*attr).rta_type == INET_DIAG_INFO as u16 {
+        if (*attr).rta_type == INET_DIAG_INFO as u16 {
             let tcpi = &*(RTA_DATA!(attr) as *const libc::tcp_info);
             return TcpState::from(tcpi.tcpi_state);
         }
