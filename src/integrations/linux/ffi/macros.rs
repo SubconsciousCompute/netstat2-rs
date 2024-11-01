@@ -21,7 +21,7 @@ macro_rules! NLMSG_LENGTH {
 
 macro_rules! NLMSG_DATA {
     ($nlh:expr) => {
-        ($nlh as *const u8).offset(NLMSG_LENGTH!(0) as isize)
+        ($nlh as *const u8).add(NLMSG_LENGTH!(0))
     };
 }
 
@@ -64,6 +64,6 @@ macro_rules! RTA_LENGTH {
 
 macro_rules! RTA_DATA {
     ($rta:expr) => {
-        ($rta as *const u8).offset(RTA_LENGTH!(0) as isize)
+        ($rta as *const u8).add(RTA_LENGTH!(0))
     };
 }
