@@ -56,7 +56,7 @@ fn attach_pids(
                 .remove(&socket_info.inode)
                 .unwrap_or_default()
                 .iter()
-                .map(|x| *x)
+                .copied()
                 .collect(),
             ..socket_info
         })

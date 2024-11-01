@@ -2,7 +2,6 @@ use crate::integrations::linux::ffi::*;
 use crate::types::error::*;
 use crate::types::*;
 use libc::*;
-use std;
 use std::io;
 use std::mem::size_of;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
@@ -31,7 +30,7 @@ pub struct NetlinkIterator {
 
 impl NetlinkIterator {
     pub unsafe fn new(family: __u8, protocol: __u8) -> Result<Self, Error> {
-        let socket = socket(AF_NETLINK as i32, SOCK_DGRAM, NETLINK_INET_DIAG);
+        let socket = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_INET_DIAG);
 
         if socket == -1 {
             return Result::Err(Error::OsError(io::Error::last_os_error()));
@@ -41,7 +40,7 @@ impl NetlinkIterator {
         Ok(NetlinkIterator {
             protocol,
             socket,
-            recv_buf: [0u8; SOCKET_BUFFER_SIZE as usize],
+            recv_buf: [0u8; SOCKET_BUFFER_SIZE],
             nlh: std::ptr::null(),
             numbytes: 0,
             nlmsg_ok: false,
@@ -61,10 +60,10 @@ impl Iterator for NetlinkIterator {
                 }
                 self.nlmsg_ok = NLMSG_OK!(self.nlh, self.numbytes);
                 if self.nlmsg_ok {
-                    if (&*self.nlh).nlmsg_type == NLMSG_DONE as u16 {
+                    if (*self.nlh).nlmsg_type == NLMSG_DONE as u16 {
                         return None;
                     }
-                    if (&*self.nlh).nlmsg_type == NLMSG_ERROR as u16 {
+                    if (*self.nlh).nlmsg_type == NLMSG_ERROR as u16 {
                         // TODO: parse error code from msg properly
                         // https://www.infradead.org/~tgr/libnl/doc/core.html#core_errmsg
                         return Some(Result::Err(Error::NetLinkError));
@@ -189,7 +188,7 @@ unsafe fn parse_tcp_state(diag_msg: &inet_diag_msg, rtalen: usize) -> TcpState {
     let mut attr = (diag_msg as *const inet_diag_msg).offset(1) as *const rtattr;
     while RTA_OK!(attr, len) {
         if (&*attr).rta_type == INET_DIAG_INFO as u16 {
-            let tcpi = &*(RTA_DATA!(attr) as *const tcp_info);
+            let tcpi = &*(RTA_DATA!(attr) as *const libc::tcp_info);
             return TcpState::from(tcpi.tcpi_state);
         }
         attr = RTA_NEXT!(attr, len);
