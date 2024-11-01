@@ -1,6 +1,6 @@
 [package]
 name = "netstat2"
-version = "0.9.1"
+version = "0.9.2"
 authors = ["Ohad Ravid <ohad.rv@gmail.com>", "ivxvm <ivxvm@protonmail.com>"]
 rust-version = "1.70.0"
 edition = "2018"
